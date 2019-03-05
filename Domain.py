@@ -7,6 +7,7 @@ class Domain:
         self.discretizing_time_step = 0.100
         self.m = 1
         self.g = 9.81
+        self.B = 1
 
     @staticmethod
     def is_valid_state_space(p, s):

@@ -1,3 +1,3 @@
 class Policy:
-    def action(self):
-        return 0
+    def action(self, p, s):
+        return 4
