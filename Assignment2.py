@@ -4,7 +4,7 @@ from Policy import *
 
 domain = Domain()
 agent = Agent()
-policy = Policy()
+policy = StaticPolicy(0)
 
 print(agent.play(domain, policy))
 print(agent.expected_return(domain, policy))

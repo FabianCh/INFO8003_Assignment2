@@ -7,6 +7,7 @@ class Agent:
         self.s = 1
 
     def play(self, domain, policy):
+        """method to return the last reward of a play"""
         u = policy.action(self.p, self.s)
         while domain.is_terminal_state(self.p, self.s) is not True:
             u = policy.action(self.p, self.s)
@@ -25,9 +26,11 @@ class Agent:
             reward = domain.reward(self.p, self.s, u)
             self.p, self.s = domain.next_state(self.p, self.s, u)
             expected_return = reward + domain.gamma * expected_return
+            i += 1
         return expected_return
 
     def expected_return(self, domain, policy, error=0.01):
+        """method to return the expected value with a policy in a domain"""
         n = 0
         while ((domain.gamma ** n) * domain.B) / (1 - domain.gamma) > error:
             n += 1
