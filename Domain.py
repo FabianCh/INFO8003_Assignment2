@@ -51,7 +51,9 @@ class Domain:
 
     def derivative(self, p, s, u):
         """method to compute the acceleration for a given action"""
-        return s, u / (self.m * (1 + self.hill_prime(p)**2)) - (self.g * self.hill_prime(p)) / (1 + self.hill_prime(p)**2) - (s**2 * self.hill_prime(p) * self.hill_second(p)) / (1 + self.hill_prime(p)**2)
+        return s, u / (self.m * (1 + self.hill_prime(p)**2)) - \
+               (self.g * self.hill_prime(p)) / (1 + self.hill_prime(p)**2) - \
+               (s**2 * self.hill_prime(p) * self.hill_second(p)) / (1 + self.hill_prime(p)**2)
 
     def next_state(self, p, s, u):
         """method to return the next state for a given state and a given action"""
@@ -76,8 +78,3 @@ class Domain:
             return 1
         else:
             return 0
-
-
-
-
-

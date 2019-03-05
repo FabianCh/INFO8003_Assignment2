@@ -1,3 +1,6 @@
+from display_caronthehill import *
+
+
 class Agent:
     def __init__(self):
         self.p = 0
@@ -9,6 +12,9 @@ class Agent:
             u = policy.action(self.p, self.s)
             self.p, self.s = domain.next_state(self.p, self.s, u)
         return domain.reward(self.p, self.s, u)
+
+    def show(self, domain, policy):
+        save_caronthehill_image(self.p, self.s, "out.jpeg")
 
     def expected_return_iterated(self, domain, policy, n):
         """method to return the Expected value after N turn with a policy in a domain"""
