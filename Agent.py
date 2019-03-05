@@ -7,31 +7,23 @@ class Agent:
         self.s = 1
 
     def play(self, domain, policy):
+        p, s = -0.5, 0
         """method to return the last reward of a play"""
-        u = policy.action(self.p, self.s)
-        while domain.is_terminal_state(self.p, self.s) is not True:
-            u = policy.action(self.p, self.s)
-            self.p, self.s = domain.next_state(self.p, self.s, u)
-        return domain.reward(self.p, self.s, u)
+        u = policy.action(p, s)
+        while domain.is_terminal_state(p, s) is not True:
+            u = policy.action(p, s)
+            r = domain.reward(p, s, u)
+            p, s = domain.next_state(p, s, u)
+        return r
 
     def show(self, domain, policy):
-        save_caronthehill_image(self.p, self.s, "out.jpeg")
+        save_caronthehill_image(0, 1, "out.jpeg")
 
-    def expected_return_iterated(self, domain, policy, n):
-        """method to return the Expected value after N turn with a policy in a domain"""
-        expected_return = 0
-        i = 0
-        while i < n:
-            u = policy.action(self.p, self.s)
-            reward = domain.reward(self.p, self.s, u)
-            self.p, self.s = domain.next_state(self.p, self.s, u)
-            expected_return = reward + domain.gamma * expected_return
-            i += 1
-        return expected_return
-
-    def expected_return(self, domain, policy, error=0.01):
+    def expected_return(self, domain, policy, n=100):
         """method to return the expected value with a policy in a domain"""
-        n = 0
-        while ((domain.gamma ** n) * domain.B) / (1 - domain.gamma) > error:
-            n += 1
-        return self.expected_return_iterated(domain, policy, n)
+        cumulated_reward = 0
+        for _ in range(n):
+            cumulated_reward += self.play(domain, policy)
+            print(cumulated_reward)
+        cumulated_reward /= n
+        return cumulated_reward

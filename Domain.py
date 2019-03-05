@@ -1,3 +1,6 @@
+import math
+
+
 class Domain:
     ACTION_SPACE = [-4, 4]
 
@@ -39,7 +42,7 @@ class Domain:
         if p < 0:
             return 2*p + 1
         else:
-            return 1
+            return 1 / ((1 + 5 * p**2)**(3 / 2))
 
     @staticmethod
     def hill_second(p):
@@ -47,13 +50,13 @@ class Domain:
         if p < 0:
             return 2
         else:
-            return 1
+            return (-15 * p) / (1 + 5 * p**2)**(5 / 2)
 
     def derivative(self, p, s, u):
         """method to compute the acceleration for a given action"""
-        return s, u / (self.m * (1 + self.hill_prime(p)**2)) - \
-               (self.g * self.hill_prime(p)) / (1 + self.hill_prime(p)**2) - \
-               (s**2 * self.hill_prime(p) * self.hill_second(p)) / (1 + self.hill_prime(p)**2)
+        return s, (u / (self.m * (1 + self.hill_prime(p)**2))) - \
+               ((self.g * self.hill_prime(p)) / (1 + self.hill_prime(p)**2)) - \
+               ((s**2 * self.hill_prime(p) * self.hill_second(p)) / (1 + self.hill_prime(p)**2))
 
     def next_state(self, p, s, u):
         """method to return the next state for a given state and a given action"""
@@ -72,9 +75,9 @@ class Domain:
     def reward(self, pt, st, ut):
         """method to compute the reward for a given state and action"""
         next_pt, next_st = self.next_state(pt, st, ut)
-        if abs(next_pt) < -1 or abs(next_st) > 3:
+        if next_pt < -1 or abs(next_st) > 3:
             return -1
-        elif abs(next_pt) > 1 and abs(next_st) <= 3:
+        elif next_pt > 1 and abs(next_st) <= 3:
             return 1
         else:
             return 0
