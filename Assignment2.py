@@ -13,4 +13,7 @@ policy = RandomPolicy()
 print("Expected return of a random policy :")
 print("     " + str(agent.expected_return(policy)))
 
-# agent.show(policy)
+# print("Generating the animation ...")
+# policy = RandomPolicy()
+# print(agent.show(policy))
+# print("Generation ended")
