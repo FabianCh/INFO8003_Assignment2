@@ -1,11 +1,7 @@
-import math
-
-
 class Domain:
     ACTION_SPACE = [-4, 4]
 
-    def __init__(self, discount_factor=0.95):
-        self.gamma = discount_factor
+    def __init__(self):
         self.integration_time_step = 0.001
         self.discretizing_time_step = 0.100
         self.m = 1
@@ -55,8 +51,8 @@ class Domain:
     def derivative(self, p, s, u):
         """method to compute the acceleration for a given action"""
         return s, (u / (self.m * (1 + self.hill_prime(p)**2))) - \
-               ((self.g * self.hill_prime(p)) / (1 + self.hill_prime(p)**2)) - \
-               ((s**2 * self.hill_prime(p) * self.hill_second(p)) / (1 + self.hill_prime(p)**2))
+            ((self.g * self.hill_prime(p)) / (1 + self.hill_prime(p)**2)) - \
+            ((s**2 * self.hill_prime(p) * self.hill_second(p)) / (1 + self.hill_prime(p)**2))
 
     def next_state(self, p, s, u):
         """method to return the next state for a given state and a given action"""

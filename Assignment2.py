@@ -4,8 +4,13 @@ from Policy import *
 
 domain = Domain()
 agent = Agent()
-#policy = StaticPolicy(4)
-policy = RandomPolicy()
 
-print(agent.play(domain, policy))
-print(agent.expected_return(domain, policy))
+policy = StaticPolicy(4)
+print("Final result of a right policy :")
+print("     " + str(agent.play(policy)))
+
+policy = RandomPolicy()
+print("Expected return of a random policy :")
+print("     " + str(agent.expected_return(policy)))
+
+# agent.show(policy)
