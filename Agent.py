@@ -20,6 +20,19 @@ class Agent:
             p, s = self.domain.next_state(p, s, u)
         return r
 
+    def one_step_transition_generator(self, policy):
+        """method to return the list of one step transition of a play"""
+        p, s = -0.5, 0
+        list_one_step_transition = []
+        while self.domain.is_terminal_state(p, s) is not True:
+            u = policy.action(p, s)
+            r = self.domain.reward(p, s, u)
+            one_step_transition = [[p, s], u, r]
+            p, s = self.domain.next_state(p, s, u)
+            one_step_transition.append([p, s])
+            list_one_step_transition.append(one_step_transition)
+        return list_one_step_transition
+
     def show(self, policy):
         """method to create the animation of the result of a given policy"""
         p, s = -0.5, 0
