@@ -2,6 +2,8 @@
   <dictionary name="hp">
     <words>
       <w>discretizing</w>
+      <w>keras</w>
+      <w>scikit</w>
     </words>
   </dictionary>
 </component>
