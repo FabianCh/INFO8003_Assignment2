@@ -74,7 +74,7 @@ class Agent:
         """method to return the expected value with a policy in a domain"""
         cumulative_reward = 0
         for _ in range(n):
-            cumulative_reward += self.play(policy)
+            cumulative_reward += self.play(policy)[0]
         cumulative_reward /= n
         return cumulative_reward
 
@@ -125,22 +125,17 @@ class Agent:
 
                 elif method == "Neural_network":
 
+                    X = np.array(X)
+                    y = np.array(y)
+
                     model = Sequential()
                     model.add(Dense(5, input_dim=3, activation='relu'))
                     model.add(Dense(5, activation='relu'))
                     model.add(Dense(5, activation='relu'))
                     model.add(Dense(5, activation='relu'))
+                    model.add(Dense(1, activation='linear'))
 
-                    if i == 0:
-                        model.add(Dense(1, activation='sigmoid'))
-                        model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
-                    else:
-                        model.add(Dense(1, activation='linear'))
-                        opt = SGD(lr=0.01, momentum=0.9)
-                        model.compile(loss='mean_squared_error', optimizer=opt, metrics=['mse'])
-
-                    X = np.array(X)
-                    y = np.array(y)
+                    model.compile(loss='mean_squared_error', optimizer='adam', metrics=['mse'])
 
                     model.fit(X, y, epochs=10, batch_size=10, verbose=0)
 
@@ -153,20 +148,6 @@ class Agent:
                 print("Q" + str(i))
 
             return self.approximation_function_Qn[-1]
-
-    # def parametric_q_learning(self, n, mathod="neural_network"):
-    #     """
-    #     method to learn the estimator of the q function
-    #     :param n: index if the Qn needed
-    #     :return: Qn
-    #     """
-    #     if len(self.approximation_parametric_function_Qn) > n:
-    #         return self.approximation_parametric_function_Qn[n]
-    #     else:
-    #         i = len(self.approximation_parametric_function_Qn)
-    #
-    #         while i < n:
-    #             pass
 
     def display_q_function(self, n, method="Linear_regression"):
         """
@@ -197,6 +178,7 @@ class Agent:
         plt.colorbar(cs)
         plt.xlabel("position")
         plt.ylabel("speed")
+        plt.title("Value of Q" + str(n) + " for each state and the forward action")
         plt.show()
         plt.clf()
 
@@ -204,6 +186,7 @@ class Agent:
         plt.colorbar(cs2)
         plt.xlabel("position")
         plt.ylabel("speed")
+        plt.title("Value of Q" + str(n) + " for each state and the backward action")
         plt.show()
         plt.clf()
 
@@ -211,4 +194,5 @@ class Agent:
         plt.colorbar(cs3)
         plt.xlabel("position")
         plt.ylabel("speed")
+        plt.title("argmax of Q" + str(n))
         plt.show()
