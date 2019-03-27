@@ -1,5 +1,6 @@
 from display_caronthehill import *
 from Domain import *
+import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.image as img
 import matplotlib.animation as animation
@@ -15,6 +16,7 @@ class Agent:
         self.domain = Domain()
         self.gamma = discount_factor
         self.approximation_function_Qn = []
+        self.approximation_parametric_function_Qn = []
         self.buffer_one_step_transition = []
 
     def play(self, policy):
@@ -76,9 +78,9 @@ class Agent:
         cumulative_reward /= n
         return cumulative_reward
 
-    def learning_q_iteration(self, n, method="Linear_regression"):
+    def fitted_q_iteration(self, n, method="Linear_regression"):
         """
-        method to learn the q function
+        method to learn the estimator of the q function
         :param n: index if the Qn needed
         :param method: string to choose the learning method (Linear_regression, Extremely_Randomized_Trees
                                                                                                 or Neural_network)
@@ -124,8 +126,10 @@ class Agent:
                 elif method == "Neural_network":
 
                     model = Sequential()
-                    model.add(Dense(20, input_dim=3, activation='relu'))
-                    model.add(Dense(20, activation='relu'))
+                    model.add(Dense(5, input_dim=3, activation='relu'))
+                    model.add(Dense(5, activation='relu'))
+                    model.add(Dense(5, activation='relu'))
+                    model.add(Dense(5, activation='relu'))
 
                     if i == 0:
                         model.add(Dense(1, activation='sigmoid'))
@@ -138,7 +142,7 @@ class Agent:
                     X = np.array(X)
                     y = np.array(y)
 
-                    model.fit(X, y, epochs=1, batch_size=10, verbose=0)
+                    model.fit(X, y, epochs=10, batch_size=10, verbose=0)
 
                     self.approximation_function_Qn.append(model)
 
@@ -149,3 +153,62 @@ class Agent:
                 print("Q" + str(i))
 
             return self.approximation_function_Qn[-1]
+
+    # def parametric_q_learning(self, n, mathod="neural_network"):
+    #     """
+    #     method to learn the estimator of the q function
+    #     :param n: index if the Qn needed
+    #     :return: Qn
+    #     """
+    #     if len(self.approximation_parametric_function_Qn) > n:
+    #         return self.approximation_parametric_function_Qn[n]
+    #     else:
+    #         i = len(self.approximation_parametric_function_Qn)
+    #
+    #         while i < n:
+    #             pass
+
+    def display_q_function(self, n, method="Linear_regression"):
+        """
+        method to display the estimator of the q function for the action 'forward', 'backward' and the max of
+        the 'forward' and 'backward'
+        :param n: index if the Qn to display
+        :param method: string to choose the learning method (Linear_regression, Extremely_Randomized_Trees
+                                                                                                or Neural_network)
+        :return: plot three images
+        """
+        x = np.linspace(-1, 1, 200)
+        y = np.linspace(-3, 3, 200)
+        qn = self.fitted_q_iteration(n, method)
+        vector_img_right = np.zeros((200, 200))
+        vector_img_left = np.zeros((200, 200))
+        vector_img = np.zeros((200, 200))
+
+        for i in range(200):
+            for j in range(200):
+                vector_img_right[199 - j, i] = qn.predict(np.array([x[i], y[j], 4]).reshape(1, -1))[0]
+                vector_img_left[199 - j, i] = qn.predict(np.array([x[i], y[j], -4]).reshape(1, -1))[0]
+                if vector_img_left[199 - j, i] <= vector_img_right[199 - j, i]:
+                    vector_img[199 - j, i] = 4
+                else:
+                    vector_img[199 - j, i] = -4
+
+        cs = plt.contourf(x, y, vector_img_right, cmap='Spectral')
+        plt.colorbar(cs)
+        plt.xlabel("position")
+        plt.ylabel("speed")
+        plt.show()
+        plt.clf()
+
+        cs2 = plt.contourf(x, y, vector_img_left, cmap='Spectral')
+        plt.colorbar(cs2)
+        plt.xlabel("position")
+        plt.ylabel("speed")
+        plt.show()
+        plt.clf()
+
+        cs3 = plt.contourf(x, y, vector_img, cmap='Spectral')
+        plt.colorbar(cs3)
+        plt.xlabel("position")
+        plt.ylabel("speed")
+        plt.show()
